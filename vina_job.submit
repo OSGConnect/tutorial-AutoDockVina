@@ -1,0 +1,15 @@
+Universe = vanilla
+Executable = vina_wrapper.bash
+
+transfer_input_files = 2gut_config.txt, 2gut.pdbqt, ligand.pdbqt 
+should_transfer_files=Yes
+when_to_transfer_output = ON_EXIT
+
+output        = job.out.$(Process)
+error         = job.error.$(Process)
+log           = job.log.$(Process)
+
+requirements = (HAS_CVMFS_oasis_opensciencegrid_org =?= TRUE)
+Queue 1
+
+
