@@ -1,0 +1,18 @@
+receptor = receptor.pdbqt
+
+center_x = -14
+center_y = 18
+center_z = -15
+
+size_x = 14
+size_y = 18
+size_z = 15
+
+
+cpu = 1 ## for OSG runs 1 cpu is mandated
+
+exhaustiveness = 8 #defualt
+
+num_modes = 9 # max number of distinct possitions
+
+energy_range = 5 # max deltaG differance between recorded possitions

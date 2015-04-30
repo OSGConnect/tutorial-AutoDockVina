@@ -1,7 +1,7 @@
 Universe = vanilla
 Executable = vina_wrapper.bash
 
-transfer_input_files = 2gut_config.txt, 2gut.pdbqt, ligand.pdbqt 
+transfer_input_files = receptor.pdbqt, receptor_config.txt, ligand.pdbqt 
 should_transfer_files=Yes
 when_to_transfer_output = ON_EXIT
 
