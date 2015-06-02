@@ -1,132 +1,59 @@
-# Overview
-In this tutorial, we will explore how pegasus simplifies the docking of several ligands for a given protein. Once a pegasus workflow is established for a sample case, we could re-use the workflow for docking calculations of different ligand libraries and proteins.  In the long run, the pegasus workflow approach saves a lot of time in adding ligands to library or set  up calculations for set of receptors and ligands. 
+# Autodock Vina Tutorial
 
-# Docking with library of ligands
-We want to screen a library of ligands using Autodock-Vina and pegasus workflow manager. The necessary files to run the example are available to you via tutorial command. 
+## Overview
+Autodock Vina is a molecular docking program useful for computer aided drug design.  In this tutorial, we will learn how to run Autodock Vina on open science grid (OSG).  We have a separate tutorial for screening a library of several ligands.
+
+## Autodock Vina tutorial files
+
+It is easy to start with the "tutorial" command. In the command prompt, type
+```
+$ tutorial VinaAutodock ### Creates "tutorial-VinaAutodock" directory with input, job submission and execution script files
+```
  
-    $ tutorial                  ### Without an argument, it shows the list of available tutorials.
-    $ tutorial pegasus-vina     ### The files to run the pegasus-vina tutorial are created under the directory tutorial-pegasus-vina
-    $ cd tutorial-pegasus-vina  ### Change to this directory
+This will create a directory “tutorial-VinaAutodock". Inside the directory, you will see the following files
+```
+receptor_config.txt   # Configuration file (input)
+receptor.pdbqt        # Receptor coordinates and atomic charges (input)
+ligand.pdbqt          # Ligand coordinates and atomic charges (input)
+vina_job.submit       # Job submission file
+vina_wrapper.bash     # Execution script
+```
+ We discuss the details of  "vina_job.submit" and "vian_wrapper.bash" files. To see how to prepare the input files, receptor_config.txt,  receptor.pdbqt and ligand.pdbqt, check the autodock website at Scripps Research Institute. 
+
+##Job execution and submission files
+The file “vina_job.submit” is the job submission file and contains the description of the job in HTCondor language. 
+```
+Universe = vanilla             # The Universe defines an execution environment for Condor 
+Executable = vina_wrapper.bash # Executable is either a binary or a shell wrapper script
  
-Let us take a  look at the files inside the directory "tutorial-pegasus-vina".  The following are vina input files.
-
-    receptor_config.txt   ### Configuration file (input)
-    receptor.pdbqt        ### Receptor pdbqt file that contains coordinates and charges of atoms(input)
-
-The ligands are listed inside "input_ligands" directory.
-
-    $ ls input_ligands   ### There are 40 ligands inside this directory.
+transfer_input_files = receptor_config.txt, receptor.pdbqt, ligand.pdbqt  # Input files transfred to the worker machine
+should_transfer_output_files=Yes    # Transfers all the output files
+when_to_transfer_output = ON_EXIT   # File transfers are performed on exit 
+output        = job.out             # Standard output from your job goes in this file
+error         = job.error           # Standard error from your job goes in this file
+log           = job.log             # Status of your job is logged in this file
+requirements = (HAS_CVMFS_oasis_opensciencegrid_org =?= TRUE) # Check the availability of OASIS on remote worker machine
+Queue 1        # The above job descriptions are send to the queue
+```
+The job description is expressed in key-value(s) pair.  For example, the key is "Universe" and the value is "vanilla". The key "transfer_input_files" can have more than one value. 
  
-The following files are related to pegasus workflow management:
+ Next we see the execution wrapper  “vina_wrapper.bash”. The execution wrapper and its inside content are executed in the remote worker machine.
+ ```
+#!/bin/bash           ### Shell interpreter.
+module load autodock  # Sets up the environment (such as path of the binary, libraries ..etc) to run autodock vina.
+vina --config receptor_config.txt --ligand ligand.pdbqt --out receptor-ligand_output.pdbqt --log receptor-ligand.log   # Execution of vina with input and output files as arguments.
+```
+## Running the simulation
+We submit the job using "condor_submit" command as follows
+```
+$ condor_submit vina_job.submit # Submit the condor job script "vina_job.submit"
+```
 
-	pegasusrc                  ### The configuration file for pegasus
-	dax-generator-singleJob.py ### Python script generates dax.xml file
-    sites-generator.bash       ###   Bash script generates sites.xml file
-    submit.bash                ### Bash script submits the pegasus workflow.
- 
-The file "pegasusrc" contains the pegasus configuration information. We can simply keep this file in the current working directory without worrying much about the details ( If you would like to know the details, please visit the pegasus home page). The files - dax.xml and sites.xml contain the information about the work flow and data management. 
+Now you have submitted the autodock vina job on the open science grid. The present job should be finished quickly (less than 10 mins). You can check the status of the submitted job by using  "condor_q" command as follows
+```
+$ condor_q username # The status of the job is printed on the screen. Here, username is your login name.
+```
+After job completion, you will see the output files  receptor-ligand_output.pdbqt and receptor-ligand.log in your work directory.
 
-# Submit script
-Let us pay attention to few parts of the "submit" script to understand about submitting the workflow.  Open the file "submit" and take a look:
-
-	...
-	line 9 ./dax-generator-vina.py ### Execution of "dax-generator-vina.py" script. Generates dax.xml.
-	...
-	line 14 ./sites-generator.bash   ### Execution of "sites-generator.bash" script. Generates sites.xml.
-	...
-	line 17 pegasus-plan \               ###  Executes the pegasus-plan with the following arguments
-	line 18    --conf pegasusrc \             ###   pegasus configuration file
-	line 19    --sites condorpool \           ###   jobs are executed in condorpool
-	line 20    --dir $PWD/workflows \         ###   The path of the workflow directory
-	line 21    --output-site local \          ###   Outputs are directed to the local site.
-	line 22    --cluster horizontal \         ###   Cluster the jobs horizontally
-	line 23    --dax dax.xml \                ###   Name of the dax file
-	line 24    --submit                       ###   Type of action is submit
-
-# sites-generator  
-The purpose of sites-generator script is to generate the sites.xml file. There are several lines declared in the sites-generator script. We need to understand the lines defining the scratch and output directories. 
-
-	...
-	line 4 cat >sites.xml <<EOF  ### creates the file "sites.xml" and appends the following lines.
-	...
-	line 11 <file-server protocol="file" url="file://" mount-point="$PWD/scratch"/>   ###  Define the path of scratch directory
-	line 12 <internal-mount-point mount-point="$PWD/scratch"/>                        ###  Define the path of scratch directory
-	...
-	line 17 <file-server protocol="file" url="file://" mount-point="$PWD/outputs"/>   ### Define the path of output directory
-	line 18 <internal-mount-point mount-point="$PWD/outputs"/>                        ### Define the path of output directory
-	...
-	line 32 EOF   ### End of sites.xml file
-
-The files  "submit.bash"  and "sites-generator.bash" will not change very much for a new workflow.  We need to edit these two files,  when we change the name of the dax-generator and/or the path of outputs, scratch and workflows.
-
-# DAX generator 
-The file `dax.xml` contains the workflow information, including the description about the jobs and required input files. We could manually write the dax.xml file but it is not very pleasant for the human eye to deal with the xml format. Here, dax.xml is generated via the python script "dax-generator-singleJob.py".  Take a look at the python script, it is self explanatory with lots of comments.  If you have difficulty to understand the script, please feel free to send us an email. Here is the brief description about dax-generator python script.
-
-	...
-	line 8 dax = ADAG("vina-ligand-receptor") ###   Name of dax. You may change any interesting name you like.
-	...
-	line 10 base_dir = os.getcwd()   ### The path of the reference base directory defined as the current working directory
-	line 11
-	...     ###  Adds "vina_wrapper.bash" file path to the dax.xml file
-	line 17
-	...
-	line 18 
-		...     ###  Adds "receptor_config.txt" file path to the dax.xml file
-	line 23
-    ...
-    line 24
-    ...     ###  Adds "receptor.pdbqt" file path to the dax.xml file
-    line 28 
-    ...
-    line 31 input_ligands_dir = base_dir + "/input_ligands"   ### Defines the path of the input ligands directory
-    ...
-    line 35 ### Loops over the ligand files inside the "input_ligands" directory.
-    ...
-    line 36
-    ...     ###  Adds each ligand file path to dax.xml
-    line 38
-    ...
-    line 40
-    ...     ### Name and information of output files
-    line 43
-    ...
-    line 45
-    ...    ### Define a job with the description about input and output files.
-    line 53
-
-# Job submission and status
-##To submit the job
-
-To submit the job, run:
-
-	$ ./submit
-
-To check the status of the submitted job:
-
-	$ pegasus_status
-
-You can also check with the `condor_q` command.
-
-	$ condor_q username   ###   username is your login ID
-
-Pegasus creates the following directories:
-
-    scratch/   ### Contains all the files (including input, parameter and execution) required to run the job are copied in this directory.
-    workflows/   ###  Contains the workflow files including DAGMan, data transfer scripts and condor job files.
-    outputs/   ###  Where the NAMD output files are stored at the end of each job.
-
- 
-The path of the scratch, workflows and outputs directories are declared in the "submit" scripts at lines 19, 20, 25,26 and 47.
-
-# Key points
-
- - Pegasus requires dax.xml, sites.xml and pegasusrc files. These files
-   contain the information about executable, input and output files and
-   the relation between them while executing the jobs.
- - It is convenient to generate the xml files via scripts. In our
-   example, dax.xml is generated via python script and sites.xml is
-   generated via bash script.
- - To implement a new workflow, edit the existing dax-generator,
-   sites-generator and  submit scripts.  In the above examples, we
-   modified the workflow for the single NAMD job to implement the
-   workflows of N-sequential and M-parallel, N-sequential jobs.
+## Help 
+For further assistance or questions, please email ***connect-support@opensciencegrid.org***
