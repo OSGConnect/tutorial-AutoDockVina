@@ -1,10 +1,10 @@
 # AutoDock Vina
 
- * [Overview](#overview)
- * [Autodock Vina tutorial files](#autodock-vina-tutorial-files)
- * [Job execution and submission files](#job-execution-and-submission-files)
- * [Running the simulation](#running-the-simulation)
- * [Getting Help](#getting-help)
+ * [Overview](##overview)
+ * [Autodock Vina tutorial files](##autodock-vina-tutorial-files)
+ * [Job execution and submission files](##job-execution-and-submission-files)
+ * [Running the simulation](##running-the-simulation)
+ * [Getting Help](##getting-help)
 
 
 ## Overview
