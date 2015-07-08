@@ -31,9 +31,9 @@ The file `vina_job.submit` is the job submission file and contains the descripti
 	transfer_input_files = receptor_config.txt, receptor.pdbqt, ligand.pdbqt  # Input files transfred to the worker machine
 	should_transfer_output_files = Yes    # Transfers all the output files
 	when_to_transfer_output = ON_EXIT   # File transfers are performed on exit 
-	output        = job.out             # Standard output from your job goes in this file
-	error         = job.error           # Standard error from your job goes in this file
-	log           = job.log             # Status of your job is logged in this file
+	output        = job.out.$(Process)             # Standard output from your job goes in this file
+	error         = job.error.$(Process)           # Standard error from your job goes in this file
+	log           = job.log.$(Process)             # Status of your job is logged in this file
 	requirements = (HAS_CVMFS_oasis_opensciencegrid_org =?= TRUE) # Check the availability of OASIS on remote worker machine
 	Queue 1        # The above job descriptions are send to the queue
 
