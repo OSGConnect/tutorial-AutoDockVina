@@ -9,9 +9,9 @@
 
 It is easiest to start with the `tutorial` command. Type:
 
-	$ tutorial VinaAutodock ### Creates "tutorial-VinaAutodock" directory with input, job submission and execution script files
+	$ tutorial AutodockVina ### Creates "tutorial-AutodockVina" directory with input, job submission and execution script files
 
-This will create a directory `tutorial-VinaAutodock`. Inside the directory, you will see the following files
+This will create a directory `tutorial-AutodockVina`. Inside the directory, you will see the following files
 
 	receptor_config.txt   # Configuration file (input)
 	receptor.pdbqt        # Receptor coordinates and atomic charges (input)
