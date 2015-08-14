@@ -4,7 +4,7 @@
 ## Overview
 [AutoDock Vina](http://vina.scripps.edu/) is a molecular docking program useful for computer aided drug design.  In this tutorial, we will learn how to run AutoDock Vina on OSG.  We have a separate tutorial for screening a library of several ligands.
 
-## Tutorial files
+## Tutorial files 
 
 It is easiest to start with the `tutorial` command. Type:
 
