@@ -57,4 +57,4 @@ Now you have submitted the AutoDock Vina job on the OSG.  The present job should
 After job completion, you will see the output files `receptor-ligand_output.pdbqt` and `receptor-ligand.log` in your work directory.
 		
 ## Getting Help
-For assistance or questions, please email the OSG User Support team  at [user-support@opensciencegrid.org](mailto:user-support@opensciencegrid.org) or visit the [help desk and community forums](http://support.opensciencegrid.org).
+For assistance or questions, please email the OSG User Support team  at [support@opensciencegrid.org](mailto:support@opensciencegrid.org) or visit the [help desk and community forums](http://support.opensciencegrid.org).
