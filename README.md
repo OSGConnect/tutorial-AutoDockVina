@@ -13,8 +13,9 @@ It is easiest to start with the `tutorial` command. Type:
 This will create a directory `tutorial-AutodockVina`. Inside the directory, you will see the following files
 
 	receptor_config.txt   # Configuration file (input)
-	receptor.pdbqt        # Receptor coordinates and atomic charges (input)
-	ligand.pdbqt          # Ligand coordinates and atomic charges (input)
+	data/
+		receptor.pdbqt        # Receptor coordinates and atomic charges (input)
+		ligand.pdbqt          # Ligand coordinates and atomic charges (input)
 	vina_job.submit       # Job submission file
 	vina_wrapper.bash     # Execution script
 
