@@ -1,61 +1,98 @@
-[title]: - "AutoDock Vina"
+[title]: - "Running a Molecule Docking Job with AutoDock Vina"
 [TOC]
  
 ## Overview
-[AutoDock Vina](http://vina.scripps.edu/) is a molecular docking program useful for computer aided drug design.  In this tutorial, we will learn how to run AutoDock Vina on OSG.  We have a separate tutorial for screening a library of several ligands.
 
-## Tutorial files 
+[AutoDock Vina](http://vina.scripps.edu/) is a molecular docking program useful for computer aided drug design.  In this tutorial, we will learn how to run AutoDock Vina on OSG.  
+
+## Tutorial Files 
 
 It is easiest to start with the `tutorial` command. Type:
 
-	$ tutorial AutodockVina ### Creates "tutorial-AutodockVina" directory with input, job submission and execution script files
+	$ tutorial AutoDockVina
 
-This will create a directory `tutorial-AutodockVina`. Inside the directory, you will see the following files
+This will create a directory `tutorial-AutodockVina`. Change into the directory and look at the available files: 
+
+	$ cd tutorial-AutoDockVina
+	$ ls
+
+You should see the following: 
 
 	receptor_config.txt   # Configuration file (input)
 	data/
-		receptor.pdbqt        # Receptor coordinates and atomic charges (input)
-		ligand.pdbqt          # Ligand coordinates and atomic charges (input)
+		receptor.pdbqt    # Receptor coordinates and atomic charges (input)
+		ligand.pdbqt      # Ligand coordinates and atomic charges (input)
 	vina_job.submit       # Job submission file
 	vina_wrapper.bash     # Execution script
 
-We discuss the details of  `vina_job.submit` and `vian_wrapper.bash` files. To see how to prepare the input files, `receptor_config.txt`,  `receptor.pdbqt` and `ligand.pdbqt`, check the AutoDock website.
+We need to download the AutoDock program separately into the this directory as well. Go 
+to the [AutoDock Vina website](http://vina.scripps.edu/) and click on the Download link at the top of the page. Download the Linux version of the program; you can do this directly to the current directory by using the `wget` command and the download link: 
 
-## Job execution and submission files
+	$ wget http://vina.scripps.edu/download/autodock_vina_1_1_2_linux_x86.tgz
 
-The file `vina_job.submit` is the job submission file and contains the description of the job in HTCondor language. 
+## Files Need to Submit the Job
 
-	Universe = vanilla             # The Universe defines an execution environment for Condor 
-	Executable = vina_wrapper.bash # Executable is either a binary or a shell wrapper script
-	 
-	transfer_input_files = receptor_config.txt, receptor.pdbqt, ligand.pdbqt  # Input files transfred to the worker machine
-	should_transfer_output_files = Yes    # Transfers all the output files
-	when_to_transfer_output = ON_EXIT   # File transfers are performed on exit 
-	output        = job.out.$(Process)             # Standard output from your job goes in this file
-	error         = job.error.$(Process)           # Standard error from your job goes in this file
-	log           = job.log.$(Process)             # Status of your job is logged in this file
-	requirements = (HAS_CVMFS_oasis_opensciencegrid_org =?= TRUE) # Check the availability of OASIS on remote worker machine
-	Queue 1        # The above job descriptions are send to the queue
+The file `vina_job.submit` is the job submission file and contains the description of the job in HTCondor language. Specifically, it includes an "executable" (the script HTCondor will use in the job to run vina), a list of the files needed to run the job (shown in "transfer_input_files"), and indications of where to write logging information and what resources and requirements the job needs. 
+
+**Change needed:** For the job to run successfully, you will need to replace `VINA_TGZ` in the submit file with the name of the software tar.gz file you downloaded from the AutoDock website. 
+
+	universe   = vanilla
+	executable = vina_wrapper.bash
+
+	transfer_input_files    = data/, receptor_config.txt, VINA_TGZ
+	should_transfer_files   = Yes
+	when_to_transfer_output = ON_EXIT
+
+	output        = job.$(Cluster).$(Process).out
+	error         = job.$(Cluster).$(Process).error
+	log           = job.$(Cluster).$(Process).log
+
+	requirements   = (OSGVO_OS_STRING == "RHEL 7")
+	request_cpus   = 1
+	request_memory = 512MB
+	request_disk   = 512MB
+
+	queue 1
 
 
-Next we see the execution wrapper  `vina_wrapper.bash`. The execution wrapper and its inside content are executed in the remote worker machine.
+Next we see the execution wrapper  `vina_wrapper.bash`. The execution wrapper and its inside content are executed on a worker node out in the Open Science Grid. The first two commands will unzip the file containing the AutoDock Vina program and make it accessible on the command line; we can then run a typical vina command. 
 
+**Change needed:** In the script, replace `VINA_TGZ` with the name of the software tar.gz file you downloaded from the AutoDock website. Change `VINA_DIR` to the name of the un-tarred software file, probably the same name without the `.tgz` ending.
 
-	#!/bin/bash           ### Shell interpreter.
-	module load autodock  # Sets up the environment (such as path of the binary, libraries ..etc) to run autodock vina.
-	vina --config receptor_config.txt --ligand ligand.pdbqt --out receptor-ligand_output.pdbqt --log receptor-ligand.log   # Execution of vina with input and output files as arguments.
+	#!/bin/bash
+
+	# Unzip autodock vina software
+	tar -xzf VINA_TGZ
+	export PATH=$PWD/VINA_DIR/bin:$PATH
+
+	# Run vina
+	vina --config receptor_config.txt \
+		 --ligand ligand.pdbqt --out receptor-ligand.pdbqt \
+		 --log receptor-ligand.log
+
 	
 ## Running the simulation
 		
 We submit the job using `condor_submit` command as follows
 
-	$ condor_submit vina_job.submit # Submit the condor job script "vina_job.submit"
+	$ condor_submit vina_job.submit
 	
 Now you have submitted the AutoDock Vina job on the OSG.  The present job should be finished quickly (less than 10 mins). You can check the status of the submitted job by using `condor_q` command as follows:
 
-	$ condor_q username # The status of the job is printed on the screen. Here, username is your login name.
+	$ condor_q username
 
 After job completion, you will see the output files `receptor-ligand_output.pdbqt` and `receptor-ligand.log` in your work directory.
-		
+
+## Next Steps
+
+After running this example, you may want to scale up to testing multiple molecules or ligands. Some good starting points for this include: 
+
+- Decide how many docking runs you want to try per job. If one molecule can be tested in a few seconds, you can probably run a few hundred in a job that runs in about an hour. 
+- How should you divide up the input data in this case? Do you need individual input files for each molecule, or can you use one to share? Should the molecule files all get copied to every job or just the jobs where they're needed? You can separate groups of files by putting them in separate directories or tar.gz files to help with this. 
+- Look at [this guide](12000062019) to see different ways that you can use HTCondor to submit multiple jobs at once. 
+
+If you want to use a different (or additional) docking programs, you can include them in the same job by downloading and including those software files in your job submission. 
+
 ## Getting Help
+
 For assistance or questions, please email the OSG User Support team  at [support@opensciencegrid.org](mailto:support@opensciencegrid.org) or visit the [help desk and community forums](http://support.opensciencegrid.org).
