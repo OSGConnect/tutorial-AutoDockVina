@@ -1,15 +1,19 @@
-Universe = vanilla
-Executable = vina_wrapper.bash
+universe   = vanilla
+executable = vina_wrapper.bash
 
-transfer_input_files = receptor.pdbqt, receptor_config.txt, ligand.pdbqt 
-should_transfer_files=Yes
+transfer_input_files    = data/, receptor_config.txt, VINA_TGZ
+should_transfer_files   = Yes
 when_to_transfer_output = ON_EXIT
 
-output        = job.out.$(Process)
-error         = job.error.$(Process)
-log           = job.log.$(Process)
+output        = job.$(Cluster).$(Process).out
+error         = job.$(Cluster).$(Process).error
+log           = job.$(Cluster).$(Process).log
 
-requirements = (HAS_CVMFS_oasis_opensciencegrid_org =?= TRUE)
-Queue 1
+requirements   = (OSGVO_OS_STRING == "RHEL 7")
+request_cpus   = 1
+request_memory = 512MB
+request_disk   = 512MB
+
+queue 1
 
 
