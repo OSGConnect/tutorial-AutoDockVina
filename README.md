@@ -26,20 +26,21 @@ You should see the following:
 	vina_wrapper.bash     # Execution script
 
 We need to download the AutoDock program separately into the this directory as well. Go 
-to the [AutoDock Vina website](http://vina.scripps.edu/) and click on the Download link at the top of the page. Download the Linux version of the program; you can do this directly to the current directory by using the `wget` command and the download link: 
+to the [AutoDock Vina website](http://vina.scripps.edu/) and click on the Download link at the top of the page. Download the Linux version of the program; you can do this directly to the current directory by using the `wget` command and the download link. If you use the 
+`-O` option shown below, it will rename the tar file to match what is used in the rest of the guide. 
 
-	$ wget http://vina.scripps.edu/download/autodock_vina_1_1_2_linux_x86.tgz
+	$ wget http://vina.scripps.edu/download/autodock_vina_1_1_2_linux_x86.tgz -O autodock_vina.tar.gz
 
 ## Files Need to Submit the Job
 
 The file `vina_job.submit` is the job submission file and contains the description of the job in HTCondor language. Specifically, it includes an "executable" (the script HTCondor will use in the job to run vina), a list of the files needed to run the job (shown in "transfer_input_files"), and indications of where to write logging information and what resources and requirements the job needs. 
 
-**Change needed:** For the job to run successfully, you will need to replace `VINA_TGZ` in the submit file with the name of the software tar.gz file you downloaded from the AutoDock website. 
+**Change needed:** If your download software tar.gz file has a different name, change the name in the `transfer_input_files` line below. 
 
 	universe   = vanilla
 	executable = vina_wrapper.bash
 
-	transfer_input_files    = data/, receptor_config.txt, VINA_TGZ
+	transfer_input_files    = data/, receptor_config.txt, autodock_vina.tar.gz
 	should_transfer_files   = Yes
 	when_to_transfer_output = ON_EXIT
 
@@ -57,13 +58,14 @@ The file `vina_job.submit` is the job submission file and contains the descripti
 
 Next we see the execution wrapper  `vina_wrapper.bash`. The execution wrapper and its inside content are executed on a worker node out in the Open Science Grid. The first two commands will unzip the file containing the AutoDock Vina program and make it accessible on the command line; we can then run a typical vina command. 
 
-**Change needed:** In the script, replace `VINA_TGZ` with the name of the software tar.gz file you downloaded from the AutoDock website. Change `VINA_DIR` to the name of the un-tarred software file, probably the same name without the `.tgz` ending.
+**Change needed:** If your download tar.gz file has a different name, change it in the 
+script below, in the `tar` command. You will also need to change the name of the `AUTODOCK_FOLDER` to match whatever folder appears when you un-tar the downloaded tar.gz file. 
 
 	#!/bin/bash
 
 	# Unzip autodock vina software
-	tar -xzf VINA_TGZ
-	export PATH=$PWD/VINA_DIR/bin:$PATH
+	tar -xzf autodock_vina.tar.gz
+	export PATH=$PWD/AUTODOCK_FOLDER/bin:$PATH
 
 	# Run vina
 	vina --config receptor_config.txt \
