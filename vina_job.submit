@@ -1,4 +1,3 @@
-universe   = vanilla
 executable = vina_wrapper.bash
 
 transfer_input_files    = data/, receptor_config.txt, VINA_TGZ

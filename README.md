@@ -37,7 +37,6 @@ The file `vina_job.submit` is the job submission file and contains the descripti
 
 **Change needed:** If your download software tar.gz file has a different name, change the name in the `transfer_input_files` line below. 
 
-	universe   = vanilla
 	executable = vina_wrapper.bash
 
 	transfer_input_files    = data/, receptor_config.txt, autodock_vina.tar.gz
