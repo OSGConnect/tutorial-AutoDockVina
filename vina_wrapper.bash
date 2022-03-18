@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# set TMPDIR variable
+export TMPDIR=$_CONDOR_SCRATCH_DIR
+
 # Unzip autodock vina software into a folder called autodock
 tar -xzf autodock_vina.tar.gz
 export PATH=$PWD/AUTODOCK_FOLDER/bin:$PATH
