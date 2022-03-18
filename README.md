@@ -62,6 +62,9 @@ script below, in the `tar` command. You will also need to change the name of the
 
 	#!/bin/bash
 
+	# set TMPDIR variable
+	export TMPDIR=$_CONDOR_SCRATCH_DIR
+
 	# Unzip autodock vina software
 	tar -xzf autodock_vina.tar.gz
 	export PATH=$PWD/AUTODOCK_FOLDER/bin:$PATH
