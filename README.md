@@ -55,7 +55,7 @@ The file `vina_job.submit` is the job submission file and contains the descripti
 	queue 1
 
 
-Next we see the execution wrapper  `vina_wrapper.bash`. The execution wrapper and its inside content are executed on a worker node out in the Open Science Grid. The first two commands will unzip the file containing the AutoDock Vina program and make it accessible on the command line; we can then run a typical vina command. 
+Next we see the execution wrapper  `vina_wrapper.bash`. The execution wrapper and its inside content are executed on a worker node out in the Open Science Pool. The first two commands will unzip the file containing the AutoDock Vina program and make it accessible on the command line; we can then run a typical vina command. 
 
 **Change needed:** If your download tar.gz file has a different name, change it in the 
 script below, in the `tar` command. You will also need to change the name of the `AUTODOCK_FOLDER` to match whatever folder appears when you un-tar the downloaded tar.gz file. 
