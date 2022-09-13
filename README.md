@@ -93,7 +93,7 @@ After running this example, you may want to scale up to testing multiple molecul
 
 - Decide how many docking runs you want to try per job. If one molecule can be tested in a few seconds, you can probably run a few hundred in a job that runs in about an hour. 
 - How should you divide up the input data in this case? Do you need individual input files for each molecule, or can you use one to share? Should the molecule files all get copied to every job or just the jobs where they're needed? You can separate groups of files by putting them in separate directories or tar.gz files to help with this. 
-- Look at [this guide](12000062019) to see different ways that you can use HTCondor to submit multiple jobs at once. 
+- Look at [this guide](https://portal.osg-htc.org/documentation/software_examples_for_osg/python/tutorial-ScalingUp-Python/) to see different ways that you can use HTCondor to submit multiple jobs at once. 
 
 If you want to use a different (or additional) docking programs, you can include them in the same job by downloading and including those software files in your job submission. 
 
