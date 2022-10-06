@@ -1,7 +1,9 @@
-[title]: - "Running a Molecule Docking Job with AutoDock Vina"
-[TOC]
- 
-## Overview
+---
+ospool:
+    path: software_examples/drug_discovery/tutorial-AutoDockVina/README.md
+---
+
+# Running a Molecule Docking Job with AutoDock Vina
 
 [AutoDock Vina](http://vina.scripps.edu/) is a molecular docking program useful for computer aided drug design.  In this tutorial, we will learn how to run AutoDock Vina on OSG.  
 
