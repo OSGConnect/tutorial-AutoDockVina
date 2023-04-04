@@ -9,9 +9,9 @@ ospool:
 
 ## Tutorial Files 
 
-It is easiest to start with the `tutorial` command. Type:
+It is easiest to start with the `git clone` command to download the materials for this tutorial. Type:
 
-	$ tutorial AutoDockVina
+	$ git clone https://github.com/OSGConnect/tutorial-AutoDockVina
 
 This will create a directory `tutorial-AutodockVina`. Change into the directory and look at the available files: 
 
@@ -101,4 +101,4 @@ If you want to use a different (or additional) docking programs, you can include
 
 ## Getting Help
 
-For assistance or questions, please email the OSG User Support team  at [support@osg-htc.org](mailto:support@osg-htc.org) or visit the [help desk and community forums](https://portal.osg-htc.org/documentation/).
+For assistance or questions, please email the OSG User Support team at [support@osg-htc.org](mailto:support@osg-htc.org) or visit the [help desk and community forums](https://portal.osg-htc.org/documentation/).
