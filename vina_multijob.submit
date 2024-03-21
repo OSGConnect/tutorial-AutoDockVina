@@ -1,0 +1,19 @@
+VINA_DIR = autodock_vina_1_1_2
+
+executable = vina_multi.sh
+arguments = $(VINA_DIR)
+
+transfer_input_files    = $(inputdir)/, autodock_vina.tar.gz
+transfer_output_files   = results
+should_transfer_files   = Yes
+when_to_transfer_output = ON_EXIT
+
+output        = logs/job.$(Cluster).$(Process).out
+error         = logs/job.$(Cluster).$(Process).error
+log           = logs/job.$(Cluster).$(Process).log
+
+request_cpus   = 1
+request_memory = 512MB
+request_disk   = 512MB
+
+queue inputdir matching run*
