@@ -59,7 +59,7 @@ The file `vina_job.submit` is the job submission file and contains the descripti
 	log           = logs/job.$(Cluster).$(Process).log
 	
 	request_cpus   = 1
-	request_memory = 512MB
+	request_memory = 1GB
 	request_disk   = 512MB
 	
 	queue 1
