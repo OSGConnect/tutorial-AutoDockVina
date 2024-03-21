@@ -1,7 +1,7 @@
 VINA_TGZ = autodock_vina_1_1_2_linux_x86.tgz
 VINA_DIR = autodock_vina_1_1_2
 
-executable = vina_wrapper.bash
+executable = vina_run.sh
 arguments = $(VINA_TGZ) $(VINA_DIR)
 
 transfer_input_files    = data/, receptor_config.txt, $(VINA_TGZ)
