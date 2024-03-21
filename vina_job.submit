@@ -1,10 +1,9 @@
-VINA_TGZ = autodock_vina_1_1_2_linux_x86.tgz
 VINA_DIR = autodock_vina_1_1_2
 
 executable = vina_run.sh
-arguments = $(VINA_TGZ) $(VINA_DIR)
+arguments = $(VINA_DIR)
 
-transfer_input_files    = data/, receptor_config.txt, $(VINA_TGZ)
+transfer_input_files    = data/, autodock_vina.tar.gz
 should_transfer_files   = Yes
 when_to_transfer_output = ON_EXIT
 # uncommenting this line will save the output files to the results folder

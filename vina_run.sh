@@ -1,10 +1,9 @@
 #!/bin/bash
 
-VINA_TGZ=$1
-VINA_DIR=$2
+VINA_DIR=$1
 
 # Unzip autodock vina software into a folder called autodock
-tar -xzf ${VINA_TGZ}
+tar -xzf autodock_vina.tar.gz
 export PATH=$PWD/${VINA_DIR}/bin:$PATH
 
 # Run vina
