@@ -17,6 +17,7 @@ This will create a directory `tutorial-AutoDockVina`. Change into the directory 
 
 	$ cd tutorial-AutoDockVina
 	$ ls
+	$ ls data/
 
 You should see the following: 
 
@@ -24,6 +25,7 @@ You should see the following:
  	    receptor_config.txt  # Configuration file (input)
 		receptor.pdbqt       # Receptor coordinates and atomic charges (input)
 		ligand.pdbqt         # Ligand coordinates and atomic charges (input)
+	logs/					 # Empty folder for job log files
 	vina_job.submit          # Job submission file
 	vina_run.sh     	     # Execution script
 
@@ -96,9 +98,9 @@ After job completion, you will see the output files `receptor-ligand.pdbqt` and 
 
 ## Next Steps
 
-### What to Consider
+After running this example, you may want to scale up to testing multiple molecules or ligands. 
 
-After running this example, you may want to scale up to testing multiple molecules or ligands. Some good starting points for this include: 
+### What to Consider
 
 - Decide how many docking runs you want to try per job. If one molecule can be tested in a few seconds, you can probably run a few hundred in a job that runs in about an hour. 
 - How should you divide up the input data in this case? Do you need individual input files for each molecule, or can you use one to share? Should the molecule files all get copied to every job or just the jobs where they're needed? You can separate groups of files by putting them in separate directories or tar.gz files to help with this. 
