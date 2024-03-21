@@ -44,7 +44,7 @@ it worked by running vina with the help flag:
 
 ## Files Need to Submit the Job
 
-The file `vina_job.submit` is the job submission file and contains the description of the job in HTCondor language. Specifically, it includes an "executable" (the script HTCondor will use in the job to run vina), a list of the files needed to run the job (shown in "transfer_input_files"), the name of a results directory to transfer back from the completed job, and indications of where to write logging information and what resources and requirements the job needs. 
+The file `vina_job.submit` is the job submission file and contains the description of the job in HTCondor language. Specifically, it includes an "executable" (the script HTCondor will use in the job to run vina), a list of the files needed to run the job (shown in "transfer_input_files"), and indications of where to write logging information and what resources and requirements the job needs. 
 
 **Change needed:** If your downloaded program file has a different name, change the name in the `transfer_input_files` line below. 
 
