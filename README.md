@@ -30,10 +30,17 @@ You should see the following:
 	vina_run.sh     	     # Execution script
 
 We need to download the AutoDock program separately into the this directory as well. Go 
-to the [AutoDock Vina website](http://vina.scripps.edu/) and click on the Download link at the top of the page. Download the Linux version of the program; you can do this directly to the current directory by using the `wget` command and the download link. If you use the 
-`-O` option shown below, it will rename the tar file to match what is used in the rest of the guide. 
+to the [AutoDock Vina website](http://vina.scripps.edu/) and click on the Download link at the top of the page. This will then lead you to the [GitHub Downloads page](https://github.com/ccsb-scripps/AutoDock-Vina/releases). 
+Download the Linux x86_64 version of the program; you can do this directly to the current directory by using the `wget` command and the download link. If you use the 
+`-O` option shown below, it will rename the program to match what is used in the rest of the guide. 
 
-	$ wget http://vina.scripps.edu/download/autodock_vina_1_1_2_linux_x86.tgz -O autodock_vina.tar.gz
+	$ wget https://github.com/ccsb-scripps/AutoDock-Vina/releases/download/v1.2.5/vina_1.2.5_linux_x86_64 -O vina
+
+Once downloaded, we also need to give the program executable permissions. We can test that 
+it worked by running vina with the help flag: 
+
+	$ chmod +x vina
+	$ ./vina -help
 
 ## Files Need to Submit the Job
 
@@ -42,13 +49,9 @@ The file `vina_job.submit` is the job submission file and contains the descripti
 **Change needed:** If your download software tar.gz file has a different name, change the name in the `transfer_input_files` line below. Also change the name of the Vina directory. 
 This can be found by running `tar -tf autodock_vina.tar.gz`
 
-	VINA_DIR = autodock_vina_1_1_2
-	
 	executable = vina_run.sh
-	arguments = $(VINA_DIR)
 	
-	transfer_input_files    = data/, autodock_vina.tar.gz
-	transfer_output_files   = results
+	transfer_input_files    = data/, vina
 	should_transfer_files   = Yes
 	when_to_transfer_output = ON_EXIT
 	
@@ -62,28 +65,17 @@ This can be found by running `tar -tf autodock_vina.tar.gz`
 	
 	queue 1
 
-Next we see the execution script `vina_run.sh`. The execution script and its commands are executed on a worker node out in the Open Science Pool. The first two commands will unzip the file containing the AutoDock Vina program and make it accessible on the command line. 
-We will also make a folder inside the job for the results. Then we can then run a typical vina command. 
+Next we see the execution script `vina_run.sh`. The execution script and its commands are executed on a worker node out in the Open Science Pool. 
 
 **Change needed:** If your download tar.gz file has a different name, change it in the 
 script below, in the `tar` command. 
 
 	#!/bin/bash
 	
-	VINA_DIR=$1
-	
-	# Unzip autodock vina software into a folder called autodock
-	tar -xzf autodock_vina.tar.gz
-	export PATH=$PWD/${VINA_DIR}/bin:$PATH
-	
-	# Make a directory for results
-	mkdir results
-	
 	# Run vina
 	vina --config receptor_config.txt \
-		 --ligand ligand.pdbqt --out results/receptor-ligand.pdbqt \
-		 --log results/receptor-ligand.log
-	
+		 --ligand ligand.pdbqt --out results/receptor-ligand.pdbqt
+
 ## Submit the Docking Job
 		
 We submit the job using `condor_submit` command as follows
@@ -94,7 +86,7 @@ Now you have submitted the AutoDock Vina job on the OSPool.  The present job sho
 
 	$ condor_q
 
-After job completion, you will see the output files `receptor-ligand.pdbqt` and `receptor-ligand.log` in the "results" directory. 
+After job completion, you will see the output file `receptor-ligand.pdbqt`. 
 
 ## Next Steps
 
@@ -116,29 +108,38 @@ directories with input files we want to run (`run01`, `run02`, `run03`, etc.) an
 job will process all of the ligands in one of these "run" folders. 
 
 In the script, `vina_multi.sh`, we had added a for loop in order to process all 
-the ligands that were included with the job: 
+the ligands that were included with the job. We will also place those results into 
+a single folder to make it easier to organize them back on the access point: 
 
-	# Run vina on multiple ligands        
+	#!/bin/bash
+	
+	# Make a directory for results
+	mkdir results
+	
+	# Run vina on multiple ligands
 	for LIGAND in *ligand.pdbqt
 	do 
-	vina --config receptor_config.txt \
-		 --ligand ${LIGAND} --out results/receptor-${LIGAND} \
-		 --log results/receptor-${LIGAND}.log
+	./vina --config receptor_config.txt \
+		 --ligand ${LIGAND} --out results/receptor-${LIGAND}
 	done
 
-This assumes that all of the ligands have a naming scheme that we can 
+Note that this for loop assumes that all of the ligands have a naming scheme that we can 
 match using a wildcard (the `*` symbol). 
 
-And in the submit file, we have replaced the single input directory `data` with 
+In the submit file, we have added a line called `transfer_output_files` to transfer 
+back the results folder from each job. We have also replaced the single input directory `data` with 
 a variable `inputdir`, representing one of the `run` directories.  The value 
 of that variable is set via the queue statement 
 at the end of the submit file: 
 
-	transfer_input_files    = $(inputdir)/, autodock_vina.tar.gz
-	## ...other submit file details
+	executable = vina_multi.sh
+	
+	transfer_input_files    = $(inputdir)/, vina
+	transfer_output_files   = results
+	
+	# ... other job options
 	
 	queue inputdir matching run*
-
 
 ## Getting Help
 
