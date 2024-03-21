@@ -1,9 +1,6 @@
-VINA_DIR = autodock_vina_1_1_2
-
 executable = vina_multi.sh
-arguments = $(VINA_DIR)
 
-transfer_input_files    = $(inputdir)/, autodock_vina.tar.gz
+transfer_input_files    = $(inputdir)/, vina
 transfer_output_files   = results
 should_transfer_files   = Yes
 when_to_transfer_output = ON_EXIT
