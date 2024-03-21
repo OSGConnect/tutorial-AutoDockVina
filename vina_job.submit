@@ -4,10 +4,9 @@ executable = vina_run.sh
 arguments = $(VINA_DIR)
 
 transfer_input_files    = data/, autodock_vina.tar.gz
+transfer_output_files   = results
 should_transfer_files   = Yes
 when_to_transfer_output = ON_EXIT
-# uncommenting this line will save the output files to the results folder
-# transfer_output_remaps = "receptor-ligand.pdbqt=results/receptor-ligand.pdbqt;receptor-ligand.log=results/receptor-ligand.log" 
 
 output        = logs/job.$(Cluster).$(Process).out
 error         = logs/job.$(Cluster).$(Process).error
