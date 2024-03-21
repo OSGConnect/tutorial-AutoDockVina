@@ -40,14 +40,13 @@ Once downloaded, we also need to give the program executable permissions. We can
 it worked by running vina with the help flag: 
 
 	$ chmod +x vina
-	$ ./vina -help
+	$ ./vina --help
 
 ## Files Need to Submit the Job
 
 The file `vina_job.submit` is the job submission file and contains the description of the job in HTCondor language. Specifically, it includes an "executable" (the script HTCondor will use in the job to run vina), a list of the files needed to run the job (shown in "transfer_input_files"), the name of a results directory to transfer back from the completed job, and indications of where to write logging information and what resources and requirements the job needs. 
 
-**Change needed:** If your download software tar.gz file has a different name, change the name in the `transfer_input_files` line below. Also change the name of the Vina directory. 
-This can be found by running `tar -tf autodock_vina.tar.gz`
+**Change needed:** If your downloaded program file has a different name, change the name in the `transfer_input_files` line below. 
 
 	executable = vina_run.sh
 	
@@ -67,14 +66,14 @@ This can be found by running `tar -tf autodock_vina.tar.gz`
 
 Next we see the execution script `vina_run.sh`. The execution script and its commands are executed on a worker node out in the Open Science Pool. 
 
-**Change needed:** If your download tar.gz file has a different name, change it in the 
-script below, in the `tar` command. 
+**Change needed:** If your vina program file has a different name, change it in the 
+script below: 
 
 	#!/bin/bash
 	
 	# Run vina
-	vina --config receptor_config.txt \
-		 --ligand ligand.pdbqt --out results/receptor-ligand.pdbqt
+	./vina --config receptor_config.txt \
+		 --ligand ligand.pdbqt --out receptor-ligand.pdbqt
 
 ## Submit the Docking Job
 		
