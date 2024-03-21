@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# set TMPDIR variable
-export TMPDIR=$_CONDOR_SCRATCH_DIR
+VINA_TGZ=$1
+VINA_DIR=$2
 
 # Unzip autodock vina software into a folder called autodock
-tar -xzf autodock_vina.tar.gz
-export PATH=$PWD/AUTODOCK_FOLDER/bin:$PATH
+tar -xzf ${VINA_TGZ}
+export PATH=$PWD/${VINA_DIR}/bin:$PATH
 
 # Run vina
 vina --config receptor_config.txt \

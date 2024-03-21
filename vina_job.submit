@@ -1,14 +1,18 @@
-executable = vina_wrapper.bash
+VINA_TGZ = autodock_vina_1_1_2_linux_x86.tgz
+VINA_DIR = autodock_vina_1_1_2
 
-transfer_input_files    = data/, receptor_config.txt, VINA_TGZ
+executable = vina_wrapper.bash
+arguments = $(VINA_TGZ) $(VINA_DIR)
+
+transfer_input_files    = data/, receptor_config.txt, $(VINA_TGZ)
 should_transfer_files   = Yes
 when_to_transfer_output = ON_EXIT
+# transfer_output_remaps = "receptor-ligand.pdbqt=results/receptor-ligand.pdbqt;receptor-ligand.log=results/receptor-ligand.log" 
 
-output        = job.$(Cluster).$(Process).out
-error         = job.$(Cluster).$(Process).error
-log           = job.$(Cluster).$(Process).log
+output        = logs/job.$(Cluster).$(Process).out
+error         = logs/job.$(Cluster).$(Process).error
+log           = logs/job.$(Cluster).$(Process).log
 
-requirements   = (OSGVO_OS_STRING == "RHEL 7")
 request_cpus   = 1
 request_memory = 512MB
 request_disk   = 512MB
